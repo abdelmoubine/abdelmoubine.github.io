@@ -7,7 +7,7 @@
 async function fetchGitHubData() {
     const feed = document.getElementById('github-feed');
     try {
-        const response = await fetch('https://api.github.com/users/abdelmoubine/repos?sort=updated&per_page=6');
+        const response = await fetch('https://api.github.com/users/abdelmoubine/repos?sort=updated&per_page=12');
         const repos = await response.json();
         feed.innerHTML = '';
         
@@ -54,22 +54,31 @@ function toggleLanguage() {
     const currentLang = document.documentElement.lang === 'en' ? 'fr' : 'en';
     document.documentElement.lang = currentLang;
     
+    // 1. تبديل النصوص بناءً على اللغة المختارة
     document.querySelectorAll('[data-en]').forEach(element => {
         element.textContent = element.getAttribute(`data-${currentLang}`);
     });
     
-    // Update Input Placeholders
+    // 2. تبديل العلم (SVG) داخل الزر برسم أصلي 100%
+    const langBtn = document.getElementById('lang-btn');
+    const flagUSA = `<svg width="20" height="15" viewBox="0 0 3 2"><rect width="3" height="2" fill="#bf0a30"/><path d="M0 0h1.5v1h-1.5z" fill="#3c3b6e"/><path d="M0 0.15h3M0 0.46h3M0 0.77h3M0 1.08h3M0 1.39h3M0 1.7h3M0 2h3" stroke="#fff" stroke-width="0.1"/><path d="M0 0l1.5 1M1.5 0l-1.5 1" stroke="#fff" stroke-width="0.06" fill="none"/></svg>`;
+    const flagFrance = `<svg width="20" height="15" viewBox="0 0 3 2"><rect width="1" height="2" fill="#002395"/><rect x="1" width="1" height="2" fill="#fff"/><rect x="2" width="1" height="2" fill="#ed2939"/></svg>`;
+
+    // إذا كانت اللغة الحالية فرنسية، أظهر علم أمريكا (للتبديل للإنجليزية) والعكس
+    langBtn.innerHTML = `
+        <span id="lang-label">${currentLang === 'en' ? 'Français' : 'English'}</span>
+        ${currentLang === 'en' ? flagFrance : flagUSA}
+    `;
+
+    // 3. تحديث خانات الإدخال (Placeholders)
     const placeholders = {
-        en: { name: "Name", email: "Email", msg: "Message", btn: "Send Message" },
-        fr: { name: "Nom", email: "E-mail", msg: "Message", btn: "Envoyer" }
+        en: { name: "Name", email: "Email", msg: "Message" },
+        fr: { name: "Nom", email: "E-mail", msg: "Message" }
     };
-    
     const form = document.getElementById('contact-form');
     form.querySelector('input[name="from_name"]').placeholder = placeholders[currentLang].name;
     form.querySelector('input[name="user_email"]').placeholder = placeholders[currentLang].email;
     form.querySelector('textarea').placeholder = placeholders[currentLang].msg;
-    
-    document.getElementById('lang-label').textContent = currentLang === 'en' ? 'Français' : 'English';
 }
 
 window.onload = fetchGitHubData;
