@@ -1,17 +1,12 @@
-// Initialize EmailJS
-(function() {
-    emailjs.init("V0VXRfgxXET6_8Q4T");
-})();
-
 let currentPage = 1;
-const perPage = 4; // 4 projects per page (2 per row)
+const perPage = 4; 
 
 // Change page function
 function changePage(step) {
     fetchGitHubData(currentPage + step);
 }
 
-// Show notification for 5 seconds - الجهة العلوية اليسرى
+// Show notification for 5 seconds with timer bar
 function showNotification(message) {
     const notification = document.getElementById('copy-notification');
     const messageElement = document.getElementById('notification-message');
@@ -273,7 +268,7 @@ window.onload = function() {
         submitBtn.textContent = document.documentElement.lang === 'en' ? 'Sending...' : 'Envoi en cours...';
         submitBtn.disabled = true;
         
-        // Simulate sending (replace with actual EmailJS)
+        // Simulate sending
         setTimeout(function() {
             alert(document.documentElement.lang === 'en' 
                 ? 'Message sent successfully!' 
