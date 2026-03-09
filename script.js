@@ -264,19 +264,60 @@ window.onload = function() {
         
         const submitBtn = document.getElementById('submit-btn');
         const originalText = submitBtn.textContent;
+        const formData = {
+            name: this.from_name.value,
+            email: this.user_email.value,
+            message: this.message.value
+        };
         
-        submitBtn.textContent = document.documentElement.lang === 'en' ? 'Sending...' : 'Envoi en cours...';
         submitBtn.disabled = true;
+        submitBtn.textContent = document.documentElement.lang === 'en' ? 'Sending...' : 'Envoi en cours...';
         
-        // Simulate sending
-        setTimeout(function() {
+        // Send to PHP API
+        fetch('/api/send.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show thank you message
+                const thankYou = document.getElementById('thank-you-message');
+                const timerSpan = document.getElementById('timer-seconds');
+                let seconds = 10;
+                
+                thankYou.classList.add('show');
+                
+                const timer = setInterval(() => {
+                    seconds--;
+                    timerSpan.textContent = seconds;
+                    if (seconds <= 0) {
+                        clearInterval(timer);
+                        thankYou.classList.remove('show');
+                    }
+                }, 1000);
+                
+                setTimeout(() => {
+                    thankYou.classList.remove('show');
+                }, 10000);
+                
+                this.reset();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
             alert(document.documentElement.lang === 'en' 
-                ? 'Message sent successfully!' 
-                : 'Message envoyé avec succès!');
-            
-            this.reset();
-            submitBtn.textContent = originalText;
+                ? 'Network error. Please try again.' 
+                : 'Erreur réseau. Veuillez réessayer.');
+        })
+        .finally(() => {
             submitBtn.disabled = false;
-        }.bind(this), 1500);
+            submitBtn.textContent = originalText;
+        });
     });
 };
