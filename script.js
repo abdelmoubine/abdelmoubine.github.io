@@ -274,13 +274,13 @@ window.onload = function() {
         submitBtn.textContent = document.documentElement.lang === 'en' ? 'Sending...' : 'Envoi en cours...';
         
         // Send to PHP API
-        fetch('/api/send.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        })
+            fetch('/api/send.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
